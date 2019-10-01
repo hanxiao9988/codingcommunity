@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http:/www.thymeleaf.org">
+<head>
+    <title>Coding社区</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/community.css"/>
+
+    <script type="application/javascript" src="/js/jquery3.4.1.js"></script>
+    <script type="application/javascript" src="/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<div th:insert="~{navigation :: nav}"></div>
+<div class="container-fluid main">
+    <div class="row">
+        <div class=" col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <h3 class="question-title"><span th:text="${questionDTO.title}"></span></h3>
+            <span class="text-desc">
+                作者&nbsp;<span th:text="${questionDTO.user.name}"></span> &nbsp; | &nbsp;
+                发布时间&nbsp;<span th:text="${#dates.format(questionDTO.gmtCreate, 'yyyy-MM-dd HH:mm')}"></span> &nbsp; | &nbsp;
+                阅读数&nbsp;<span th:text="${questionDTO.viewCount}"></span>
+            </span>
+            <hr/>
+            <div>
+                <span th:text="${questionDTO.description}"></span>
+
+            </div>
+            <hr/>
+            <a th:href="@{'/publish/'+${questionDTO.id}}"><span class="glyphicon glyphicon-pencil text-desc" aria-hidden="true">编辑</span></a>
+
+        </div>
+
+
+        <div class="clo-lg-3 media">
+            <h4>发起人</h4>
+            <div class="media-left">
+                <a href="#">
+                    <img class="media-object headers img-rounded" th:src="${questionDTO.user.avatarUrl}">
+                </a>
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading text-desc"><span th:text="${questionDTO.user.name}"></span></h4>
+            </div>
+            <hr/>
+            <h4>相关问题</h4>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

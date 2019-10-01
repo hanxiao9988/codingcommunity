@@ -1,10 +1,7 @@
 package com.hanxiao.codingcommunity.mapper;
 
 import com.hanxiao.codingcommunity.model.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface UserMapper {
@@ -19,4 +16,10 @@ public interface UserMapper {
     @Select("select * from user where id = #{id}")
     User selectById(@Param("id") Integer id);
 
+    @Update("update user set name = #{name}, token = #{token}, gmt_modified = #{gmtModified}, avatar_url = #{avatarUrl}" +
+            "where id = #{id}")
+    void update(User user1);
+
+    @Select("select * from user where account_id = #{accountId}")
+    User selectByAccountId(String accountId);
 }

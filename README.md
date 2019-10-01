@@ -22,8 +22,17 @@
 
 [Lombok官网](https://projectlombok.org/features/all)
 
+[Mybatis Generator](http://mybatis.org/generator/)
+
+
 ### 工具
 [git](https://git-scm.com/download)
+
+### 命令
+```bash
+mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
+
+```
 
 
 
