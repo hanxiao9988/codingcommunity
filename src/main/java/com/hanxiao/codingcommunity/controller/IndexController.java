@@ -20,14 +20,13 @@ import java.util.List;
 public class IndexController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    QuestionService questionService;
+    private QuestionService questionService;
 
     @GetMapping("/")
-    public String index(HttpServletRequest request,
-                        Model model,
+    public String index(Model model,
                         @RequestParam(name = "currentPage", defaultValue = "1") Integer currentPage,
                         @RequestParam(name = "size", defaultValue = "3") Integer size) {
 

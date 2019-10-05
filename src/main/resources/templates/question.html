@@ -9,6 +9,7 @@
 
     <script type="application/javascript" src="/js/jquery3.4.1.js"></script>
     <script type="application/javascript" src="/js/bootstrap.min.js"></script>
+    <script type="application/javascript" src="/js/community.js"></script>
 
 </head>
 <body>
@@ -25,11 +26,51 @@
             <hr/>
             <div>
                 <span th:text="${questionDTO.description}"></span>
-
             </div>
             <hr/>
             <a th:href="@{'/publish/'+${questionDTO.id}}"><span class="glyphicon glyphicon-pencil text-desc" aria-hidden="true">编辑</span></a>
+            <hr/>
 
+            <!--评论框-->
+            <h4><span  th:text="${questionDTO.commentCount}"></span>个回复</h4>
+            <div class="clo-lg-12  col-md-12 col-sm-12 col-xs-12 media mediaBody" th:each="commentDTO : ${commentDTOs}">
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object headers img-rounded" th:src="${questionDTO.user.avatarUrl}">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading text-desc username"><span th:text="${questionDTO.user.name}"></span></h4>
+                </div>
+                <div class="commentContent" th:text="${commentDTO.content}"></div>
+                <div class="commentIcon">
+                    <span class="glyphicon glyphicon-thumbs-up leftIcon" aria-hidden="true"></span>
+                    <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+                </div>
+
+                <div class="pull-right" th:text="${#dates.format(commentDTO.gmtCreate, 'yyyy-MM-dd HH:mm')}"></div>
+            </div>
+
+
+
+            <!--评论窗口-->
+            <div class="clo-lg-12  col-md-12 col-sm-12 col-xs-12 media">
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object headers img-rounded" th:src="${questionDTO.user.avatarUrl}">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading text-desc username"><span th:text="${questionDTO.user.name}"></span></h4>
+                </div>
+                <hr/>
+            </div>
+            <div id="comment_section">
+                <h4>我的评论</h4>
+                <textarea class="form-control" id="content" name="content" rows="3" cols="30"></textarea>
+                <input type="hidden" id="parent_id" name="parentId" th:value="${questionDTO.id}">
+                <button type="button" class="btn btn-success btn-publish" onclick="post()">提交</button>
+            </div>
         </div>
 
 

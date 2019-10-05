@@ -40,10 +40,10 @@ public class ProfileController {
         if ("questions".equals(action)) {
             model.addAttribute("section", "questions");
             model.addAttribute("sectionName", "我的提问");
+
             PagenationDTO pagenationDTO = questionService.selectMyQuestions(user.getId(), currentPage, size);
+
             model.addAttribute("pagenationDTO", pagenationDTO);
-
-
         } else if ("replies".equals(action)) {
             model.addAttribute("section", "replies");
             model.addAttribute("sectionName", "我的回复");

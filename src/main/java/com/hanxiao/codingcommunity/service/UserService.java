@@ -2,37 +2,38 @@ package com.hanxiao.codingcommunity.service;
 
 import com.hanxiao.codingcommunity.mapper.UserMapper;
 import com.hanxiao.codingcommunity.model.User;
+import com.hanxiao.codingcommunity.model.UserExample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class UserService {
 
     @Autowired
-    UserMapper userMapper;
-
-    public User selectByToken(String token) {
-        User user = userMapper.selectByToken(token);
-        return user;
-    }
-
-    public User selectById(Integer id) {
-        User user = userMapper.selectById(id);
-        return user;
-    }
+    private UserMapper userMapper;
 
     public void createOrUpdate(User user) {
-        User user1 = userMapper.selectByAccountId(user.getAccountId());
-        if (user1 == null) {
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andAccountIdEqualTo(user.getAccountId());
+        List<User> users = userMapper.selectByExample(userExample);
+
+        if (users.size() == 0) {
+            //插入
+            user.setGmtCreate(System.currentTimeMillis());
+            user.setGmtModified(user.getGmtCreate());
             userMapper.insert(user);
         } else {
-            user1.setGmtModified(user.getGmtCreate());
-            user1.setAvatarUrl(user.getAvatarUrl());
-            user1.setName(user.getName());
-            user1.setToken(user.getToken());
-            userMapper.update(user1);
+            User dbUser = users.get(0);
+            User updateUser = new User();
+            updateUser.setGmtModified(System.currentTimeMillis());
+            updateUser.setName(user.getName());
+            updateUser.setToken(user.getToken());
+            UserExample example = new UserExample();
+            example.createCriteria().andIdEqualTo(dbUser.getId());
+            userMapper.updateByExampleSelective(updateUser, example);
         }
     }
 }

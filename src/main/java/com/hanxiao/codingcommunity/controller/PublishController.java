@@ -19,13 +19,13 @@ import javax.servlet.http.HttpServletRequest;
 public class PublishController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    QuestionService questionService;
+    private QuestionService questionService;
 
     @GetMapping("/publish/{id}")
-    public String edit(@PathVariable(name = "id") Integer id,
+    public String edit(@PathVariable(name = "id") Long id,
                        Model model) {
         Question question = questionService.selectQuestionById(id);
         model.addAttribute("title", question.getTitle());
@@ -47,7 +47,7 @@ public class PublishController {
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "tag", required = false) String tag,
-            @RequestParam(value = "id", required = false) Integer id,
+            @RequestParam(value = "id", required = false) Long id,
             HttpServletRequest request,
             Model model) {
 

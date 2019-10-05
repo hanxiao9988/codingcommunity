@@ -10,6 +10,7 @@ body {
 .btn-publish {
     float:right;
     margin-bottom: 15px;
+    margin-top: 15px;
 }
 
 .headers {
@@ -31,3 +32,27 @@ body {
     font-style: normal;
 }
 
+.username {
+    padding-top: 12px;
+}
+
+.jumbotron {
+    margin: 50px;
+}
+
+.commentContent {
+    padding: 20px 0px 5px 50px;
+}
+
+.commentIcon {
+    padding: 5px 0 0 50px;
+    color: #999;
+}
+
+.leftIcon {
+    padding: 0 10px 0 0;
+}
+
+.mediaBody {
+    border-bottom: 1px solid #eee;
+}
