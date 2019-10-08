@@ -11,13 +11,17 @@ import com.hanxiao.codingcommunity.model.Question;
 import com.hanxiao.codingcommunity.model.QuestionExample;
 import com.hanxiao.codingcommunity.model.User;
 import com.hanxiao.codingcommunity.model.UserExample;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -35,13 +39,13 @@ public class QuestionService {
         Question questiondb = questionMapper.selectByPrimaryKey(question.getId());
         if (questiondb == null) {
             question.setGmtCreate(System.currentTimeMillis());
-            question.setGmtModified(question.getGmtCreate());
+            question.setGmtModified(System.currentTimeMillis());
             question.setViewCount(0);
             question.setLikeCount(0);
             question.setCommentCount(0);
             questionMapper.insertSelective(question);
         } else {
-            question.setGmtModified(question.getGmtCreate());
+            question.setGmtModified(System.currentTimeMillis());
             QuestionExample questionExample = new QuestionExample();
             questionExample.createCriteria().andIdEqualTo(question.getId());
             int updated = questionMapper.updateByExampleSelective(question, questionExample);
@@ -55,6 +59,7 @@ public class QuestionService {
         Integer offset = (currentPage - 1) * size;
 
         QuestionExample example = new QuestionExample();
+        example.setOrderByClause("gmt_create desc");
         List<Question> questionList = questionMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
 
         //计算总问题数
@@ -92,7 +97,7 @@ public class QuestionService {
             questionDTO.setUser(users.get(0));
             questionDTOs.add(questionDTO);
         }
-        pagenationDTO.setQuestionDTOs(questionDTOs);
+        pagenationDTO.setData(questionDTOs);
         return pagenationDTO;
     }
 
@@ -142,7 +147,7 @@ public class QuestionService {
             questionDTO.setUser(user);
             questionDTOs.add(questionDTO);
         }
-        pagenationDTO.setQuestionDTOs(questionDTOs);
+        pagenationDTO.setData(questionDTOs);
         return pagenationDTO;
     }
 
@@ -169,4 +174,35 @@ public class QuestionService {
         record.setViewCount(1);
         questionExtMapper.incView(record);
     }
+
+    public List<QuestionDTO> selectRelated(QuestionDTO queryDTO) {
+        if (StringUtils.isBlank(queryDTO.getTag())) {
+            return new ArrayList<>();
+        }
+
+//        String regexpTag = queryDTO.getTag().replace(",", "|");
+//        Question question = new Question();
+//        question.setId(queryDTO.getId());
+//        question.setTag(regexpTag);
+//
+//        List<Question> questions = questionExtMapper.selectRelated(question);
+
+
+        String[] tags = StringUtils.split(queryDTO.getTag(), ",");
+        String regexpTag = Arrays.stream(tags).collect(Collectors.joining("|"));
+        Question question = new Question();
+        question.setId(queryDTO.getId());
+        question.setTag(regexpTag);
+
+        List<Question> questions = questionExtMapper.selectRelated(question);
+        List<QuestionDTO> questionDTOs = questions.stream().map(q -> {
+            QuestionDTO questionDTO = new QuestionDTO();
+            BeanUtils.copyProperties(q, questionDTO);
+            return questionDTO;
+        }).collect(Collectors.toList());
+
+        return questionDTOs;
+    }
+
+
 }

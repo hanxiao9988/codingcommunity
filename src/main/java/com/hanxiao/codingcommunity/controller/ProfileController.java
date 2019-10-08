@@ -2,6 +2,7 @@ package com.hanxiao.codingcommunity.controller;
 
 import com.hanxiao.codingcommunity.dto.PagenationDTO;
 import com.hanxiao.codingcommunity.model.User;
+import com.hanxiao.codingcommunity.service.NotificationService;
 import com.hanxiao.codingcommunity.service.QuestionService;
 import com.hanxiao.codingcommunity.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class ProfileController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @GetMapping("/profile/{action}")
     public String profile(@PathVariable(name="action") String action,
                           Model model,
@@ -42,11 +46,13 @@ public class ProfileController {
             model.addAttribute("sectionName", "我的提问");
 
             PagenationDTO pagenationDTO = questionService.selectMyQuestions(user.getId(), currentPage, size);
-
             model.addAttribute("pagenationDTO", pagenationDTO);
         } else if ("replies".equals(action)) {
+            PagenationDTO pagenationDTO = notificationService.list(user.getId(), currentPage, size);
             model.addAttribute("section", "replies");
             model.addAttribute("sectionName", "我的回复");
+            model.addAttribute("pagenationDTO", pagenationDTO);
+
         }
 
         return "profile";
